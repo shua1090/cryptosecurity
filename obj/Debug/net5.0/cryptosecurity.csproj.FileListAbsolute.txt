@@ -1,0 +1,16 @@
+C:\Users\shynn\Documents\cryptosecurity\bin\Debug\net5.0\cryptosecurity.exe
+C:\Users\shynn\Documents\cryptosecurity\bin\Debug\net5.0\cryptosecurity.deps.json
+C:\Users\shynn\Documents\cryptosecurity\bin\Debug\net5.0\cryptosecurity.runtimeconfig.json
+C:\Users\shynn\Documents\cryptosecurity\bin\Debug\net5.0\cryptosecurity.runtimeconfig.dev.json
+C:\Users\shynn\Documents\cryptosecurity\bin\Debug\net5.0\cryptosecurity.dll
+C:\Users\shynn\Documents\cryptosecurity\bin\Debug\net5.0\ref\cryptosecurity.dll
+C:\Users\shynn\Documents\cryptosecurity\bin\Debug\net5.0\cryptosecurity.pdb
+C:\Users\shynn\Documents\cryptosecurity\obj\Debug\net5.0\cryptosecurity.csprojAssemblyReference.cache
+C:\Users\shynn\Documents\cryptosecurity\obj\Debug\net5.0\cryptosecurity.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\shynn\Documents\cryptosecurity\obj\Debug\net5.0\cryptosecurity.AssemblyInfoInputs.cache
+C:\Users\shynn\Documents\cryptosecurity\obj\Debug\net5.0\cryptosecurity.AssemblyInfo.cs
+C:\Users\shynn\Documents\cryptosecurity\obj\Debug\net5.0\cryptosecurity.csproj.CoreCompileInputs.cache
+C:\Users\shynn\Documents\cryptosecurity\obj\Debug\net5.0\cryptosecurity.dll
+C:\Users\shynn\Documents\cryptosecurity\obj\Debug\net5.0\ref\cryptosecurity.dll
+C:\Users\shynn\Documents\cryptosecurity\obj\Debug\net5.0\cryptosecurity.pdb
+C:\Users\shynn\Documents\cryptosecurity\obj\Debug\net5.0\cryptosecurity.genruntimeconfig.cache
