@@ -1,10 +1,9 @@
 ﻿using System;
 using cryptosecurity;
 
-namespace cryptosecurity
-{
-    class Program
-    {
+
+namespace cryptosecurity{
+    class Program{
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");

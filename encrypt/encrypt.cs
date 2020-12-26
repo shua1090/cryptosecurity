@@ -1,8 +1,8 @@
 namespace cryptosecurity{
     public class encrypt{
         public string z;
-        public encrypt(string b){
-            this.z = b;
+        public encrypt(string f){
+            this.z = f;
         }
     }
 }
