@@ -1,17 +1,26 @@
 using System;
+using System.Numerics;
 
-
-namespace cryptosecurity{
+namespace cryptosecurity {
 
     public class encrypt{
 
-        public string stringToEncrypt;
+        string stringToEncrypt;
+        BigInteger n;
+        BigInteger phi;
+
+        public void setupNPhi() {
+            BigInteger f = largePrimeNumber() * largePrimeNumber() * largePrimeNumber();
+            BigInteger k = largePrimeNumber() * largePrimeNumber() * largePrimeNumber();
+            this.n = f * k;
+            this.phi = (f - 1) * (k - 1);
+            Console.WriteLine(this.n);
+            Console.WriteLine(this.phi);
+        }
 
         public encrypt(string text){
             this.stringToEncrypt = text;
-            decimal num1 = 0;
-            while (num1 < long.MaxValue) num1 = this.randomDecimal();
-            Console.WriteLine(num1);
+            setupNPhi();
         }
 
         public static int NextInt32() {
@@ -28,7 +37,15 @@ namespace cryptosecurity{
             return new decimal(NextInt32(), NextInt32(), NextInt32(), sign, scale);
         }
 
-        public static bool IsPrime(int number){
+        public BigInteger largePrimeNumber() {
+            decimal num1 = 0;
+            while (((num1 < long.MaxValue) || (num1 < long.MinValue)) || (!IsPrime(num1))) {
+                num1 = this.randomDecimal();
+            }
+            return (BigInteger) num1;
+        }
+
+        public static bool IsPrime(decimal number){
             if (number < 2) return false;
             if (number % 2 == 0) return (number == 2);
             int root = (int) Math.Sqrt((double)number);
