@@ -10,19 +10,22 @@ namespace cryptosecurity{
         public encrypt(string text){
             this.stringToEncrypt = text;
             decimal num1 = 0;
-            while (num1 < long.MaxValue) num1 = this.num1();
+            while (num1 < long.MaxValue) num1 = this.randomDecimal();
+            Console.WriteLine(num1);
         }
 
-        public decimal num1(){
+        public static int NextInt32() {
             var rand = new Random();
-            decimal num1;
-            int z = rand.Next(int.MinValue, int.MaxValue);
-            long f = z | (long) rand.Next(int.MinValue, int.MaxValue);
-            int k = rand.Next(int.MinValue, int.MaxValue);
-            long y = k | (long) rand.Next(int.MinValue, int.MaxValue);
-            num1 = (y | z);
-            Console.WriteLine(num1);
-            return num1;
+            int firstBits = rand.Next(0, 1 << 4) << 28;
+            int lastBits = rand.Next(0, 1 << 28);
+            return firstBits | lastBits;
+        }
+
+        public decimal randomDecimal(){
+            var rand = new Random();
+            byte scale = (byte) rand.Next(29);
+            bool sign = rand.Next(2) == 1;
+            return new decimal(NextInt32(), NextInt32(), NextInt32(), sign, scale);
         }
 
         public static bool IsPrime(int number){
