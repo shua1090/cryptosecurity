@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace cryptosecurity {
@@ -10,18 +12,13 @@ namespace cryptosecurity {
         BigInteger phi;
         BigInteger e; // Public Key
         BigInteger d; // Private Key
-        BigInteger a;
-        BigInteger b;
+        int maxLength; // For Padding Purposes
 
         public void setupNPhi() {
             BigInteger f = largePrimeNumber();
             BigInteger k = largePrimeNumber();
-            this.a = f;
-            this.b = k;
             this.n = f * k;
             this.phi = (f - 1) * (k - 1);
-            Console.WriteLine("f is: " + f);
-            Console.WriteLine("k is: " + k);
             BigInteger temp = 0;
             Console.WriteLine("Starting here:");
             do {
@@ -32,7 +29,6 @@ namespace cryptosecurity {
             } while (!(BigInteger.GreatestCommonDivisor(temp, this.phi) == 1));
             this.e = temp;
             Console.WriteLine("e is " + this.e);
-            Console.WriteLine("phi is " + this.phi);
             this.d = inverse(this.phi, this.e);
             Console.WriteLine("d is " + this.d);
             Console.WriteLine("Expected answer, 1; Actual Answer: " + (this.e * this.d) % this.phi);
@@ -47,40 +43,170 @@ namespace cryptosecurity {
                 r = r1 - q * r2;
                 r1 = r2;
                 r2 = r;
-
                 t = t1 - q * t2;
                 t1 = t2;
                 t2 = t;
             }
-
             if (r1 == 1)
                 inv = t1;
-
             if (inv < 0)
-                inv = inv + a;
-
+                inv += a;
             return inv;
         }
 
-        public encrypt(string text){
-            this.stringToEncrypt = text;
+        public string encryptionMethodPadding(char z, int maxLength = 0) {
+            BigInteger value = 0;
+            
+                value = BigInteger.ModPow(z, this.e, this.n);
+           
+            if (maxLength == 0) {
+                return value.ToString();
+            }
+            return new string('0', maxLength - value.ToString().Length) + value;
+        }
+
+        public char decryptionMethod(BigInteger f) {
+            var z = BigInteger.ModPow(f, this.d, this.n);
+            return (char) z;
+             
+        }
+
+        private void writePublicKeyToFile(string path = "public.key") {
+            using (StreamWriter sw = new StreamWriter(path)) {
+                sw.WriteLine(this.e);
+            }
+        }
+
+        private void writePrivateKeyToFile(string path = "private.key") {
+            using (StreamWriter sw = new StreamWriter(path)) {
+                sw.WriteLine(this.d);
+            }
+        }
+
+        private void readPublicKey(string path = "public.key") {
+            using (StreamReader sr = new StreamReader(path)) {
+                this.e = BigInteger.Parse(sr.ReadToEnd());
+            }
+        }
+
+        private void readN(string path = "n.key") {
+            using (StreamReader sr = new StreamReader(path)) {
+                this.n = BigInteger.Parse(sr.ReadToEnd());
+            }
+        }
+
+        private void writeN(string path = "n.key") {
+            using (StreamWriter sw = new StreamWriter(path)) {
+                sw.WriteLine(this.n);
+            }
+        }
+
+        private void readPrivateKey(string path = "private.key") {
+            using (StreamReader sr = new StreamReader(path)) {
+                //Console.WriteLine("THIS IS WAR" + sr.ReadToEnd());
+                this.d = BigInteger.Parse(sr.ReadToEnd());
+            }
+        }
+
+        public void writeEncryptedTextToFile(string encrypted_text ,string path = "cipherText.txt") {
+            using (StreamWriter sw = new StreamWriter(path)) {
+                sw.Write(encrypted_text);
+            }
+        }
+
+        public string readEncryptedFile(string path = "cipherText.txt") {
+            string t = "";
+            using (StreamReader sr = new StreamReader(path)) {
+                t += sr.ReadToEnd();
+            }
+            return t;
+        }
+
+        public List<BigInteger> paddingRemoval(string input, int MaxLength) {
+            List<BigInteger> temp = new List<BigInteger>();
+            BigInteger f;
+            int z = input.Length / MaxLength;
+            for (int i = 0; i < z; i++) {
+                {
+                        temp.Add(BigInteger.Parse(input.Substring(0, MaxLength)));
+                        input = input.Substring(MaxLength);
+                }
+            }
+            return temp;
+        }
+
+        public void generateKeys() {
             setupNPhi();
-            var integerToEncrypt = 105;
-            Console.WriteLine("Public Key");
-            Console.WriteLine(this.e);
-            Console.WriteLine("Private Key");
-            Console.WriteLine(this.d);
-            var encryptedValue = BigInteger.ModPow(integerToEncrypt, this.e, this.n);
-            Console.WriteLine("Encrypted Data");
-            Console.WriteLine(encryptedValue);
-            var decryptedText = BigInteger.ModPow(encryptedValue, this.d, this.n);
-            Console.WriteLine("Decrypted Data:");
-            Console.WriteLine(decryptedText);
+        }
+
+        private void getMaxLength() {
+            int index = 0;
+            for (int i = 1; i <= 128; i++) {
+                if (encryptionMethodPadding((char)i).Length > maxLength) {
+                    index = i;
+                    this.maxLength = encryptionMethodPadding((char)i).Length;
+                }
+            }
+        }
+
+        public void encryptToFile(string pathToPublic = "") {
+            if (pathToPublic.Equals("")) {
+                generateKeys();
+                getMaxLength();
+                string temp = "";
+                foreach (char z in this.stringToEncrypt) {
+                    temp += encryptionMethodPadding(z, maxLength);
+                }
+                writeEncryptedTextToFile(temp);
+                writeN();
+                writePrivateKeyToFile();
+                writePublicKeyToFile();
+            }
+            else {
+                readPublicKey(pathToPublic);
+                readN();
+            }
+        }
+
+        public void decryptFromFile(string pathToPrivate = "") {
+            if (pathToPrivate.Equals("")) {
+                readN();
+                readPrivateKey();
+                readPublicKey();
+                getMaxLength();
+                var f = readEncryptedFile();
+                List<BigInteger> temp = paddingRemoval(f, maxLength);
+                foreach (BigInteger z in temp) {
+                    Console.Write(decryptionMethod(z));
+                }
+            }
+        }
+
+        public encrypt(string text = ""){
+            this.stringToEncrypt = text;
+
+            //readN();
+
+            //readPublicKey();
+            //readPrivateKey();
+            //string t = "";
+            //getMaxLength();
+            ////foreach (char z in text) {
+            ////    t += encryptionMethodPadding(z, maxLength);
+            ////}
+
+            ////writeEncryptedTextToFile(t);
+
+            //var f = readEncryptedFile();
+            //List<BigInteger> temp = paddingRemoval(f, maxLength);
+            //foreach (BigInteger z in temp) {
+            //    Console.WriteLine(decryptionMethod(z));
+            //}
         }
 
         public BigInteger randomBigInt(){
             Random rand = new Random();
-            byte[] data = new byte[256];
+            byte[] data = new byte[100];
             rand.NextBytes(data);
             return new BigInteger(data);
         }
